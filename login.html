@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>P2P Transfer — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0F1C;
+    --bg-2: #0D1428;
+    --text: #EAF0FB;
+    --muted: #7C89A8;
+    --teal: #45E0C7;
+    --indigo: #7C6CFF;
+    --error: #FF6B7A;
+    --line: rgba(255,255,255,0.09);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0;
+    padding:0;
+    height:100%;
+  }
+
+  body{
+    background:
+      radial-gradient(circle at 50% 38%, rgba(69,224,199,0.10), transparent 45%),
+      radial-gradient(circle at 50% 60%, rgba(124,108,255,0.10), transparent 45%),
+      var(--bg);
+    background-image:
+      radial-gradient(circle at 50% 38%, rgba(69,224,199,0.10), transparent 45%),
+      radial-gradient(circle at 50% 60%, rgba(124,108,255,0.10), transparent 45%),
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px),
+      var(--bg);
+    background-size: auto, auto, 42px 42px, 42px 42px, auto;
+    background-position: center, center, center, center, center;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .login-screen{
+    width: 100%;
+    max-width: 480px;
+    padding: 24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+
+  /* ---- network animation ---- */
+  .network-animation{
+    position: relative;
+    width: min(340px, 82vw);
+    height: 80px;
+    margin-bottom: 18px;
+  }
+
+  .node{
+    position:absolute;
+    top:50%;
+    width: 22px;
+    height: 22px;
+    border-radius:50%;
+    transform: translateY(-50%);
+  }
+
+  .node-a{
+    left: 0;
+    background: var(--teal);
+    box-shadow: 0 0 0 0 rgba(69,224,199,0.55);
+    animation: pulse-a 2.4s ease-out infinite;
+  }
+
+  .node-b{
+    right: 0;
+    background: var(--indigo);
+    box-shadow: 0 0 0 0 rgba(124,108,255,0.55);
+    animation: pulse-b 2.4s ease-out infinite 1.2s;
+  }
+
+  @keyframes pulse-a{
+    0%{ box-shadow: 0 0 0 0 rgba(69,224,199,0.55); }
+    70%{ box-shadow: 0 0 0 14px rgba(69,224,199,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(69,224,199,0); }
+  }
+  @keyframes pulse-b{
+    0%{ box-shadow: 0 0 0 0 rgba(124,108,255,0.55); }
+    70%{ box-shadow: 0 0 0 14px rgba(124,108,255,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(124,108,255,0); }
+  }
+
+  .link-track{
+    position:absolute;
+    top:50%;
+    left: 11px;
+    right: 11px;
+    height: 1px;
+    transform: translateY(-50%);
+    background: repeating-linear-gradient(
+      90deg,
+      var(--line) 0 6px,
+      transparent 6px 12px
+    );
+  }
+
+  .packet{
+    position:absolute;
+    top:50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+  }
+
+  .packet.fwd{
+    background: var(--teal);
+    box-shadow: 0 0 10px rgba(69,224,199,0.8);
+    animation: send-fwd 2.4s ease-in-out infinite;
+  }
+  .packet.rev{
+    background: var(--indigo);
+    box-shadow: 0 0 10px rgba(124,108,255,0.8);
+    animation: send-rev 2.4s ease-in-out infinite 1.2s;
+  }
+
+  @keyframes send-fwd{
+    0%{ left: 11px; opacity:0; }
+    8%{ opacity:1; }
+    46%{ opacity:1; }
+    54%{ left: calc(100% - 19px); opacity:0; }
+    100%{ left: calc(100% - 19px); opacity:0; }
+  }
+  @keyframes send-rev{
+    0%{ left: calc(100% - 19px); opacity:0; }
+    8%{ opacity:1; }
+    46%{ opacity:1; }
+    54%{ left: 11px; opacity:0; }
+    100%{ left: 11px; opacity:0; }
+  }
+
+  /* ---- text ---- */
+  .wordmark{
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: clamp(28px, 6vw, 38px);
+    letter-spacing: -0.01em;
+    margin: 0 0 10px 0;
+    background: linear-gradient(90deg, var(--teal), var(--indigo));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .credit{
+    margin: 0 0 34px 0;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .credit .label{
+    font-size: 12px;
+  }
+  .credit .author{
+    display:block;
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* ---- action area ---- */
+  .action-area{
+    width: 100%;
+    max-width: 300px;
+    position: relative;
+    min-height: 52px;
+  }
+
+  .enter-btn{
+    width: 100%;
+    padding: 14px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    background: transparent;
+    border: 1.5px solid transparent;
+    border-radius: 999px;
+    background-image:
+      linear-gradient(var(--bg-2), var(--bg-2)),
+      linear-gradient(90deg, var(--teal), var(--indigo));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .enter-btn:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(69,224,199,0.15);
+  }
+  .enter-btn:focus-visible, .login-btn:focus-visible, .password-input:focus-visible{
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+
+  .password-form{
+    display:flex;
+    flex-direction:column;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .password-form.visible{
+    opacity: 1;
+    transform: translateY(0);
+    position: relative;
+    pointer-events: auto;
+  }
+
+  .password-input{
+    width: 100%;
+    padding: 12px 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid var(--line);
+    text-align: center;
+    transition: border-color 0.2s ease;
+  }
+  .password-input::placeholder{ color: var(--muted); }
+  .password-input:focus{ border-bottom-color: var(--teal); }
+
+  .login-btn{
+    width: 100%;
+    padding: 13px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #06120F;
+    background: linear-gradient(90deg, var(--teal), var(--indigo));
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.18s ease, filter 0.18s ease;
+  }
+  .login-btn:hover{ filter: brightness(1.08); transform: translateY(-1px); }
+
+  .error-msg{
+    min-height: 18px;
+    margin: 0;
+    font-size: 13px;
+    color: var(--error);
+  }
+
+  .shake{ animation: shake 0.35s ease; }
+  @keyframes shake{
+    0%, 100%{ transform: translateX(0); }
+    25%{ transform: translateX(-6px); }
+    75%{ transform: translateX(6px); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .node-a, .node-b, .packet.fwd, .packet.rev{ animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="login-screen">
+
+    <div class="network-animation" aria-hidden="true">
+      <div class="link-track"></div>
+      <span class="packet fwd"></span>
+      <span class="packet fwd" style="animation-delay:0.8s"></span>
+      <span class="packet rev"></span>
+      <span class="packet rev" style="animation-delay:0.8s"></span>
+      <div class="node node-a"></div>
+      <div class="node node-b"></div>
+    </div>
+
+    <h1 class="wordmark">P2P Transfer</h1>
+
+    <p class="credit">
+      <span class="label">Produced By-</span>
+      <span class="author">Rakibol Hasan</span>
+    </p>
+
+    <div class="action-area">
+      <button type="button" id="enterBtn" class="enter-btn">Enter</button>
+
+      <form id="passwordForm" class="password-form" autocomplete="off">
+        <input
+          type="password"
+          id="passwordInput"
+          class="password-input"
+          placeholder="Password"
+          autocomplete="off"
+        />
+        <button type="submit" class="login-btn">Login</button>
+        <p class="error-msg" id="errorMsg"></p>
+      </form>
+    </div>
+
+  </div>
+
+<script>
+  const CORRECT_PASSWORD = "rakibolhasan@@@111222";
+
+  const enterBtn = document.getElementById('enterBtn');
+  const passwordForm = document.getElementById('passwordForm');
+  const passwordInput = document.getElementById('passwordInput');
+  const errorMsg = document.getElementById('errorMsg');
+
+  enterBtn.addEventListener('click', () => {
+    enterBtn.style.display = 'none';
+    passwordForm.classList.add('visible');
+    passwordInput.focus();
+  });
+
+  passwordForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    if (passwordInput.value === CORRECT_PASSWORD) {
+      window.location.href = 'index.html';
+    } else {
+      errorMsg.textContent = 'ভুল পাসওয়ার্ড, আবার চেষ্টা করুন।';
+      passwordInput.value = '';
+      passwordForm.classList.add('shake');
+      setTimeout(() => passwordForm.classList.remove('shake'), 350);
+      passwordInput.focus();
+    }
+  });
+</script>
+
+</body>
+</html>

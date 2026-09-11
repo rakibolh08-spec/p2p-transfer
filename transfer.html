@@ -1,0 +1,2874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>P2P Transfer Room</title>
+
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family: "Inter", sans-serif;
+
+            color: white;
+
+            background:
+                radial-gradient(
+                    circle at 20% 10%,
+                    rgba(0, 150, 255, 0.14),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 80% 90%,
+                    rgba(120, 70, 255, 0.14),
+                    transparent 35%
+                ),
+                #070a10;
+
+            padding: 30px;
+
+        }
+
+
+        .container {
+
+            max-width: 1150px;
+
+            margin: auto;
+
+        }
+
+
+        .topbar {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .logo {
+
+            font-size: 22px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .logo span {
+
+            opacity: 0.5;
+
+        }
+
+
+        .connection {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            padding: 9px 14px;
+
+            border:
+                1px solid
+                rgba(255,255,255,0.1);
+
+            border-radius: 30px;
+
+            background:
+                rgba(255,255,255,0.04);
+
+            font-size: 13px;
+
+        }
+
+
+        .dot {
+
+            width: 9px;
+
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: #f59e0b;
+
+        }
+
+
+        .dot.connected {
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 12px
+                rgba(34,197,94,0.8);
+
+        }
+
+
+        .room-header {
+
+            text-align: center;
+
+            margin-bottom: 35px;
+
+        }
+
+
+        .room-header h1 {
+
+            font-size: 46px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .room-header p {
+
+            color: #8d96a8;
+
+        }
+
+
+        .room-code {
+
+            display: inline-block;
+
+            margin-top: 20px;
+
+            padding: 13px 24px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,0.06);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.1);
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            letter-spacing: 3px;
+
+        }
+
+
+        .dashboard {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+
+            gap: 20px;
+
+        }
+
+
+        .card {
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            background:
+                rgba(255,255,255,0.045);
+
+            border-radius: 20px;
+
+            padding: 28px;
+
+            backdrop-filter: blur(15px);
+
+        }
+
+
+        .card h2 {
+
+            font-size: 19px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .card-description {
+
+            color: #8d96a8;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+        }
+
+
+        .upload-area {
+
+            margin-top: 25px;
+
+            min-height: 230px;
+
+            border:
+                2px dashed
+                rgba(255,255,255,0.13);
+
+            border-radius: 16px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            text-align: center;
+
+            padding: 25px;
+
+        }
+
+
+        .upload-icon {
+
+            font-size: 48px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .button {
+
+            margin-top: 18px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            padding: 13px 22px;
+
+            background: white;
+
+            color: #080a0f;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+
+        .button:hover {
+
+            transform: translateY(-2px);
+
+        }
+
+
+        .button:disabled {
+
+            opacity: 0.4;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+        }
+
+
+        .button.secondary {
+
+            background:
+                rgba(255,255,255,0.08);
+
+            color: white;
+
+            border:
+                1px solid
+                rgba(255,255,255,0.1);
+
+        }
+
+
+        input[type="file"] {
+
+            display: none;
+
+        }
+
+
+        .file-info {
+
+            margin-top: 18px;
+
+            width: 100%;
+
+            padding: 13px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,0.04);
+
+            font-size: 13px;
+
+            color: #c5ccda;
+
+            display: none;
+
+        }
+
+
+        .file-name {
+
+            font-weight: 700;
+
+            color: white;
+
+            word-break: break-word;
+
+        }
+
+
+        .progress-container {
+
+            margin-top: 22px;
+
+        }
+
+
+        .progress-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 10px;
+
+            font-size: 13px;
+
+            color: #9ca6b8;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .transfer-stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #c5ccda;
+            flex-wrap: wrap;
+        }
+
+        .transfer-stats span {
+            padding: 7px 10px;
+            border-radius: 9px;
+            background: rgba(255,255,255,.045);
+            border: 1px solid rgba(255,255,255,.07);
+        }
+
+        .transfer-stats strong {
+            color: white;
+        }
+
+
+        .progress-bar {
+
+            height: 10px;
+
+            width: 100%;
+
+            background:
+                rgba(255,255,255,0.08);
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+        }
+
+
+        .progress-fill {
+
+            height: 100%;
+
+            width: 0%;
+
+            background: white;
+
+            border-radius: inherit;
+
+            transition: width 0.15s linear;
+
+        }
+
+
+        .status-box {
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,0.035);
+
+            color: #aab2c1;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+        }
+
+
+        .receive-area {
+
+            margin-top: 25px;
+
+        }
+
+
+        .save-button {
+
+            width: 100%;
+
+            margin-top: 15px;
+
+        }
+
+
+        .transfer-meta {
+
+            margin-top: 20px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 10px;
+
+        }
+
+
+        .meta {
+
+            padding: 14px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,0.035);
+
+        }
+
+
+        .meta small {
+
+            display: block;
+
+            color: #737d90;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .meta strong {
+
+            font-size: 14px;
+
+        }
+
+
+        .empty {
+
+            padding: 35px 15px;
+
+            text-align: center;
+
+            color: #737d90;
+
+        }
+
+
+        .hidden {
+
+            display: none !important;
+
+        }
+
+
+        @media (max-width: 750px) {
+
+            body {
+                padding: 18px;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .room-header h1 {
+                font-size: 34px;
+            }
+
+            .topbar {
+                gap: 15px;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- =====================================
+         TOP BAR
+    ====================================== -->
+
+    <header class="topbar">
+
+        <div class="logo">
+
+            ⚡ P2P
+            <span>TRANSFER</span>
+
+        </div>
+
+
+        <div class="connection">
+
+            <span
+                class="dot"
+                id="connectionDot"
+            ></span>
+
+            <span id="connectionText">
+                Connecting...
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================
+         ROOM HEADER
+    ====================================== -->
+
+    <section class="room-header">
+
+        <h1>
+            Transfer Room
+        </h1>
+
+
+        <p id="roomStatus">
+            Connecting to room...
+        </p>
+
+
+        <div
+            class="room-code"
+            id="roomCode"
+        >
+            ---- ----
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         DASHBOARD
+    ====================================== -->
+
+    <section class="dashboard">
+
+
+        <!-- =================================
+             SEND
+        ================================== -->
+
+        <div class="card">
+
+            <h2>
+                📤 Send Files
+            </h2>
+
+
+            <p class="card-description">
+
+                Select a file and send it
+                directly to the connected device.
+
+            </p>
+
+
+            <div class="upload-area">
+
+                <div class="upload-icon">
+                    📁
+                </div>
+
+
+                <p>
+                    Choose a file
+                </p>
+
+
+                <label
+                    for="fileInput"
+                    class="button"
+                >
+                    Select File
+                </label>
+
+
+                <input
+                    type="file"
+                    id="fileInput"
+                >
+
+
+                <div
+                    class="file-info"
+                    id="fileInfo"
+                >
+
+                    <div class="file-name"
+                         id="fileName">
+                    </div>
+
+                    <div id="fileSize">
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="button"
+                    id="sendButton"
+                    disabled
+                >
+                    Send File
+                </button>
+
+            </div>
+
+
+            <div
+                class="progress-container hidden"
+                id="sendProgressContainer"
+            >
+
+                <div class="progress-header">
+
+                    <span>
+                        Sending
+                    </span>
+
+                    <span id="sendPercent">
+                        0%
+                    </span>
+
+                </div>
+
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill"
+                        id="sendProgress"
+                    ></div>
+
+                </div>
+
+                <div class="transfer-stats">
+                    <span>Speed: <strong id="sendSpeed">0 B/s</strong></span>
+                    <span>ETA: <strong id="sendEta">--:--</strong></span>
+                </div>
+
+
+                <div
+                    class="status-box"
+                    id="sendStatus"
+                >
+                    Preparing transfer...
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================
+             RECEIVE
+        ================================== -->
+
+        <div class="card">
+
+            <h2>
+                📥 Received Files
+            </h2>
+
+
+            <p class="card-description">
+
+                Files sent by the other device
+                will appear here.
+
+            </p>
+
+
+            <div class="receive-area">
+
+
+                <div
+                    class="status-box"
+                    id="receiveStatus"
+                >
+                    Waiting for incoming file...
+
+                </div>
+
+
+                <div
+                    class="transfer-meta hidden"
+                    id="receiveMeta"
+                >
+
+                    <div class="meta">
+
+                        <small>
+                            File
+                        </small>
+
+                        <strong
+                            id="receiveFileName"
+                        >
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="meta">
+
+                        <small>
+                            Size
+                        </small>
+
+                        <strong
+                            id="receiveFileSize"
+                        >
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="button secondary save-button hidden"
+                    id="saveLocationButton"
+                >
+                    Choose Save Location
+                </button>
+
+
+                <div
+                    class="progress-container hidden"
+                    id="receiveProgressContainer"
+                >
+
+                    <div class="progress-header">
+
+                        <span>
+                            Receiving
+                        </span>
+
+                        <span id="receivePercent">
+                            0%
+                        </span>
+
+                    </div>
+
+
+                    <div class="progress-bar">
+
+                        <div
+                            class="progress-fill"
+                            id="receiveProgress"
+                        ></div>
+
+                    </div>
+
+                    <div class="transfer-stats">
+                        <span>Speed: <strong id="receiveSpeed">0 B/s</strong></span>
+                        <span>ETA: <strong id="receiveEta">--:--</strong></span>
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="status-box"
+                    id="receivedFileBox"
+                >
+
+                    No files received yet.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+
+
+<script>
+
+"use strict";
+
+
+/* =========================================
+   SOCKET
+========================================= */
+
+const socket = io();
+
+
+/* =========================================
+   GLOBAL STATE
+========================================= */
+
+let currentRoom = null;
+
+let peerConnection = null;
+
+let dataChannel = null;
+
+let selectedFile = null;
+
+let saveFileHandle = null;
+
+let writableStream = null;
+
+let receivedBytes = 0;
+
+let receivingFile = false;
+
+let incomingFile = null;
+
+let transferCancelled = false;
+let receiverReadyResolver = null;
+let receiverReadyPromise = null;
+
+let sendStartTime = 0;
+let receiveStartTime = 0;
+
+
+/*
+    256 KB chunk.
+
+    This is deliberately small enough to work
+    reliably with WebRTC DataChannel.
+
+    We DO NOT load the entire file into memory.
+*/
+
+const CHUNK_SIZE = 256 * 1024;
+
+
+/*
+    Maximum buffered amount before waiting.
+*/
+
+const MAX_BUFFERED_AMOUNT =
+    8 * 1024 * 1024;
+
+
+/* =========================================
+   DOM
+========================================= */
+
+const roomCodeEl =
+    document.getElementById("roomCode");
+
+const roomStatusEl =
+    document.getElementById("roomStatus");
+
+const connectionTextEl =
+    document.getElementById("connectionText");
+
+const connectionDotEl =
+    document.getElementById("connectionDot");
+
+const fileInput =
+    document.getElementById("fileInput");
+
+const fileInfo =
+    document.getElementById("fileInfo");
+
+const fileNameEl =
+    document.getElementById("fileName");
+
+const fileSizeEl =
+    document.getElementById("fileSize");
+
+const sendButton =
+    document.getElementById("sendButton");
+
+const sendProgressContainer =
+    document.getElementById(
+        "sendProgressContainer"
+    );
+
+const sendProgress =
+    document.getElementById(
+        "sendProgress"
+    );
+
+const sendPercent =
+    document.getElementById(
+        "sendPercent"
+    );
+
+const sendStatus =
+    document.getElementById(
+        "sendStatus"
+    );
+
+const sendSpeed =
+    document.getElementById(
+        "sendSpeed"
+    );
+
+const sendEta =
+    document.getElementById(
+        "sendEta"
+    );
+
+const receiveStatus =
+    document.getElementById(
+        "receiveStatus"
+    );
+
+const receiveSpeed =
+    document.getElementById(
+        "receiveSpeed"
+    );
+
+const receiveEta =
+    document.getElementById(
+        "receiveEta"
+    );
+
+const receiveMeta =
+    document.getElementById(
+        "receiveMeta"
+    );
+
+const receiveFileName =
+    document.getElementById(
+        "receiveFileName"
+    );
+
+const receiveFileSize =
+    document.getElementById(
+        "receiveFileSize"
+    );
+
+const saveLocationButton =
+    document.getElementById(
+        "saveLocationButton"
+    );
+
+const receiveProgressContainer =
+    document.getElementById(
+        "receiveProgressContainer"
+    );
+
+const receiveProgress =
+    document.getElementById(
+        "receiveProgress"
+    );
+
+const receivePercent =
+    document.getElementById(
+        "receivePercent"
+    );
+
+const receivedFileBox =
+    document.getElementById(
+        "receivedFileBox"
+    );
+
+
+/* =========================================
+   LOAD ROOM
+========================================= */
+
+try {
+
+    const saved =
+        sessionStorage.getItem(
+            "p2p_current_room"
+        );
+
+
+    if (saved) {
+
+        currentRoom =
+            JSON.parse(saved);
+
+    }
+
+}
+
+catch (error) {
+
+    console.error(
+        "Could not load room:",
+        error
+    );
+
+}
+
+
+/* =========================================
+   DISPLAY ROOM CODE
+========================================= */
+
+if (
+    currentRoom &&
+    currentRoom.roomCode
+) {
+
+    const code =
+        currentRoom.roomCode;
+
+
+    roomCodeEl.textContent =
+        code.substring(0, 4) +
+        "-" +
+        code.substring(4, 8);
+
+}
+
+else {
+
+    roomStatusEl.textContent =
+        "Room information not found.";
+
+}
+
+
+/* =========================================
+   SOCKET CONNECT
+========================================= */
+
+socket.on(
+    "connect",
+    () => {
+
+        console.log(
+            "Transfer socket connected:",
+            socket.id
+        );
+
+
+        connectionTextEl.textContent =
+            "Server Connected";
+
+
+        connectionDotEl.classList.add(
+            "connected"
+        );
+
+
+        /*
+            Reconnect to room.
+        */
+
+        if (
+            currentRoom &&
+            currentRoom.roomCode &&
+            currentRoom.password &&
+            currentRoom.role
+        ) {
+
+            console.log(
+                "Rejoining room:",
+                currentRoom.roomCode
+            );
+
+
+            socket.emit(
+                "rejoin-room",
+                {
+
+                    roomCode:
+                        currentRoom.roomCode,
+
+                    password:
+                        currentRoom.password,
+
+                    role:
+                        currentRoom.role
+
+                }
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   ROOM RECONNECTED
+========================================= */
+
+socket.on(
+    "room-reconnected",
+    (data) => {
+
+        console.log(
+            "Room reconnected:",
+            data
+        );
+
+
+        roomStatusEl.textContent =
+            "Connected to transfer room";
+
+
+        receiveStatus.textContent =
+            "Waiting for incoming file...";
+
+
+        /*
+            Start WebRTC connection.
+        */
+
+        createPeerConnection();
+
+    }
+);
+
+
+/* =========================================
+   PEER READY
+========================================= */
+
+socket.on(
+    "peer-ready",
+    (data) => {
+
+        console.log(
+            "Peer ready:",
+            data
+        );
+
+
+        roomStatusEl.textContent =
+            "Both devices are connected";
+
+
+        createPeerConnection();
+
+
+        /*
+            Host creates the DataChannel
+            and sends the offer.
+        */
+
+        if (
+            currentRoom &&
+            currentRoom.role === "host"
+        ) {
+
+            createOffer();
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   PEER JOINED
+========================================= */
+
+socket.on(
+    "peer-joined",
+    (data) => {
+
+        console.log(
+            "Peer joined:",
+            data
+        );
+
+
+        roomStatusEl.textContent =
+            "Other device joined";
+
+
+        createPeerConnection();
+
+
+        /*
+            Host starts WebRTC negotiation.
+        */
+
+        if (
+            currentRoom &&
+            currentRoom.role === "host"
+        ) {
+
+            createOffer();
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   WEBRTC OFFER
+========================================= */
+
+socket.on(
+    "offer",
+    async (data) => {
+
+        try {
+
+            console.log(
+                "WebRTC offer received"
+            );
+
+
+            createPeerConnection();
+
+
+            await peerConnection.setRemoteDescription(
+                new RTCSessionDescription(
+                    data.offer
+                )
+            );
+
+
+            const answer =
+                await peerConnection.createAnswer();
+
+
+            await peerConnection.setLocalDescription(
+                answer
+            );
+
+
+            socket.emit(
+                "answer",
+                {
+                    answer
+                }
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Offer error:",
+                error
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   WEBRTC ANSWER
+========================================= */
+
+socket.on(
+    "answer",
+    async (data) => {
+
+        try {
+
+            console.log(
+                "WebRTC answer received"
+            );
+
+
+            if (!peerConnection) {
+                return;
+            }
+
+
+            await peerConnection.setRemoteDescription(
+                new RTCSessionDescription(
+                    data.answer
+                )
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Answer error:",
+                error
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   ICE CANDIDATE
+========================================= */
+
+socket.on(
+    "ice-candidate",
+    async (data) => {
+
+        try {
+
+            if (
+                peerConnection &&
+                data.candidate
+            ) {
+
+                await peerConnection.addIceCandidate(
+                    new RTCIceCandidate(
+                        data.candidate
+                    )
+                );
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.warn(
+                "ICE candidate error:",
+                error
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   SERVER DISCONNECT
+========================================= */
+
+socket.on(
+    "disconnect",
+    () => {
+
+        connectionTextEl.textContent =
+            "Server Offline";
+
+
+        connectionDotEl.classList.remove(
+            "connected"
+        );
+
+    }
+);
+
+
+/* =========================================
+   ROOM ERROR
+========================================= */
+
+socket.on(
+    "room-error",
+    (data) => {
+
+        console.error(
+            "Room error:",
+            data
+        );
+
+
+        roomStatusEl.textContent =
+            data?.message ||
+            "Room connection failed.";
+
+    }
+);
+
+
+/* =========================================
+   PEER DISCONNECTED
+========================================= */
+
+socket.on(
+    "peer-disconnected",
+    () => {
+
+        roomStatusEl.textContent =
+            "The other device disconnected.";
+
+        receiveStatus.textContent =
+            "Waiting for the other device...";
+
+    }
+);
+
+
+/* =========================================
+   CREATE PEER CONNECTION
+========================================= */
+
+function createPeerConnection() {
+
+    /*
+        Don't create multiple connections.
+    */
+
+    if (peerConnection) {
+        return peerConnection;
+    }
+
+
+    peerConnection =
+        new RTCPeerConnection({
+
+            iceServers: [
+
+                {
+                    urls:
+                        "stun:stun.l.google.com:19302"
+                },
+
+                {
+                    urls:
+                        "stun:stun1.l.google.com:19302"
+                }
+
+            ]
+
+        });
+
+
+    /* =====================================
+       ICE
+    ====================================== */
+
+    peerConnection.onicecandidate =
+        (event) => {
+
+            if (
+                event.candidate
+            ) {
+
+                socket.emit(
+                    "ice-candidate",
+                    {
+                        candidate:
+                            event.candidate
+                    }
+                );
+
+            }
+
+        };
+
+
+    /* =====================================
+       CONNECTION STATE
+    ====================================== */
+
+    peerConnection.onconnectionstatechange =
+        () => {
+
+            console.log(
+                "WebRTC state:",
+                peerConnection.connectionState
+            );
+
+
+            if (
+                peerConnection.connectionState ===
+                "connected"
+            ) {
+
+                roomStatusEl.textContent =
+                    "🟢 P2P connection established";
+
+            }
+
+
+            if (
+                peerConnection.connectionState ===
+                "failed"
+            ) {
+
+                roomStatusEl.textContent =
+                    "P2P connection failed.";
+
+            }
+
+
+            if (
+                peerConnection.connectionState ===
+                "disconnected"
+            ) {
+
+                roomStatusEl.textContent =
+                    "P2P connection disconnected.";
+
+            }
+
+        };
+
+
+    /* =====================================
+       DATA CHANNEL
+    ====================================== */
+
+    peerConnection.ondatachannel =
+        (event) => {
+
+            console.log(
+                "DataChannel received"
+            );
+
+
+            dataChannel =
+                event.channel;
+
+
+            setupDataChannel();
+
+        };
+
+
+    /*
+        HOST creates the channel.
+    */
+
+    if (
+        currentRoom &&
+        currentRoom.role === "host"
+    ) {
+
+        dataChannel =
+            peerConnection.createDataChannel(
+                "file-transfer",
+                {
+                    ordered: true
+                }
+            );
+
+
+        setupDataChannel();
+
+    }
+
+
+    return peerConnection;
+
+}
+
+
+/* =========================================
+   DATA CHANNEL SETUP
+========================================= */
+
+function setupDataChannel() {
+
+    if (!dataChannel) {
+        return;
+    }
+
+
+    dataChannel.binaryType =
+        "arraybuffer";
+
+
+    dataChannel.bufferedAmountLowThreshold =
+        1024 * 1024;
+
+
+    dataChannel.onopen =
+        () => {
+
+            console.log(
+                "DataChannel OPEN"
+            );
+
+
+            roomStatusEl.textContent =
+                "🟢 P2P connection ready";
+
+
+            sendButton.disabled =
+                !selectedFile;
+
+
+            receiveStatus.textContent =
+                "Ready to receive files.";
+
+        };
+
+
+    dataChannel.onclose =
+        () => {
+
+            console.log(
+                "DataChannel CLOSED"
+            );
+
+
+            sendButton.disabled =
+                true;
+
+        };
+
+
+    dataChannel.onerror =
+        (error) => {
+
+            console.error(
+                "DataChannel error:",
+                error
+            );
+
+        };
+
+
+    dataChannel.onmessage =
+        handleIncomingMessage;
+
+}
+
+
+/* =========================================
+   CREATE OFFER
+========================================= */
+
+async function createOffer() {
+
+    try {
+
+        if (!peerConnection) {
+            createPeerConnection();
+        }
+
+
+        /*
+            Avoid duplicate offers.
+        */
+
+        if (
+            peerConnection.signalingState !==
+            "stable"
+        ) {
+
+            return;
+
+        }
+
+
+        const offer =
+            await peerConnection.createOffer();
+
+
+        await peerConnection.setLocalDescription(
+            offer
+        );
+
+
+        socket.emit(
+            "offer",
+            {
+                offer
+            }
+        );
+
+
+        console.log(
+            "WebRTC offer sent"
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Create offer error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   FILE SELECT
+========================================= */
+
+fileInput.addEventListener(
+    "change",
+    () => {
+
+        const file =
+            fileInput.files[0];
+
+
+        if (!file) {
+            return;
+        }
+
+
+        selectedFile =
+            file;
+
+
+        fileInfo.style.display =
+            "block";
+
+
+        fileNameEl.textContent =
+            file.name;
+
+
+        fileSizeEl.textContent =
+            formatBytes(
+                file.size
+            );
+
+
+        sendButton.disabled =
+            !(
+                dataChannel &&
+                dataChannel.readyState ===
+                "open"
+            );
+
+
+        sendStatus.textContent =
+            "File selected. Ready to send.";
+
+    }
+);
+
+
+/* =========================================
+   SEND BUTTON
+========================================= */
+
+sendButton.addEventListener(
+    "click",
+    async () => {
+
+        if (!selectedFile) {
+            return;
+        }
+
+
+        if (
+            !dataChannel ||
+            dataChannel.readyState !==
+            "open"
+        ) {
+
+            alert(
+                "P2P connection is not ready yet."
+            );
+
+            return;
+        }
+
+
+        await sendFile(
+            selectedFile
+        );
+
+    }
+);
+
+
+/* =========================================
+   SEND FILE
+========================================= */
+
+async function sendFile(file) {
+
+    try {
+
+        transferCancelled =
+            false;
+
+
+        sendButton.disabled =
+            true;
+
+
+        sendProgressContainer.classList.remove(
+            "hidden"
+        );
+
+
+        sendStatus.textContent =
+            "Starting transfer...";
+
+
+        sendProgress.style.width =
+            "0%";
+
+
+        sendPercent.textContent =
+            "0%";
+
+
+        /*
+            Send file metadata first.
+        */
+
+        dataChannel.send(
+            JSON.stringify({
+
+                type:
+                    "file-start",
+
+                name:
+                    file.name,
+
+                size:
+                    file.size,
+
+                mime:
+                    file.type ||
+                    "application/octet-stream"
+
+            })
+        );
+
+
+        sendStatus.textContent =
+            "Waiting for receiver to choose a save location...";
+
+        receiverReadyPromise = new Promise((resolve) => {
+            receiverReadyResolver = resolve;
+        });
+
+        await receiverReadyPromise;
+        receiverReadyResolver = null;
+        receiverReadyPromise = null;
+
+        if (transferCancelled) {
+            return;
+        }
+
+        sendStatus.textContent = "Sending file...";
+
+        let offset = 0;
+        sendStartTime = performance.now();
+        sendSpeed.textContent = "0 B/s";
+        sendEta.textContent = "--:--";
+
+
+        while (
+            offset < file.size
+        ) {
+
+            if (
+                transferCancelled
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+                Backpressure.
+
+                Don't allow WebRTC's internal
+                outgoing buffer to grow too much.
+            */
+
+            while (
+                dataChannel.bufferedAmount >
+                MAX_BUFFERED_AMOUNT
+            ) {
+
+                await waitForBuffer();
+
+            }
+
+
+            const end =
+                Math.min(
+                    offset +
+                    CHUNK_SIZE,
+                    file.size
+                );
+
+
+            const blob =
+                file.slice(
+                    offset,
+                    end
+                );
+
+
+            const buffer =
+                await blob.arrayBuffer();
+
+
+            dataChannel.send(
+                buffer
+            );
+
+
+            offset =
+                end;
+
+
+            const percent =
+                file.size === 0
+                    ? 100
+                    : (
+                        offset /
+                        file.size
+                    ) * 100;
+
+
+            updateSendProgress(
+                percent,
+                offset,
+                file.size
+            );
+
+
+            /*
+                Yield occasionally so the UI
+                stays responsive.
+            */
+
+            if (
+                offset %
+                (CHUNK_SIZE * 16) ===
+                0
+            ) {
+
+                await sleep(0);
+
+            }
+
+        }
+
+
+        dataChannel.send(
+            JSON.stringify({
+                type:
+                    "file-end"
+            })
+        );
+
+
+        updateSendProgress(
+            100,
+            file.size,
+            file.size
+        );
+
+
+        sendStatus.textContent =
+            "✅ File sent successfully.";
+
+
+        sendButton.disabled =
+            false;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "File sending error:",
+            error
+        );
+
+
+        sendStatus.textContent =
+            "❌ Transfer failed: " +
+            error.message;
+
+
+        sendButton.disabled =
+            false;
+
+    }
+
+}
+
+
+/* =========================================
+   BUFFER WAIT
+========================================= */
+
+function waitForBuffer() {
+
+    return new Promise(
+        (resolve) => {
+
+            if (
+                !dataChannel ||
+                dataChannel.bufferedAmount <=
+                MAX_BUFFERED_AMOUNT
+            ) {
+
+                resolve();
+
+                return;
+            }
+
+
+            const check =
+                () => {
+
+                    if (
+                        !dataChannel ||
+                        dataChannel.readyState !==
+                        "open"
+                    ) {
+
+                        resolve();
+
+                        return;
+
+                    }
+
+
+                    if (
+                        dataChannel.bufferedAmount <=
+                        MAX_BUFFERED_AMOUNT
+                    ) {
+
+                        resolve();
+
+                    }
+
+                    else {
+
+                        setTimeout(
+                            check,
+                            20
+                        );
+
+                    }
+
+                };
+
+
+            check();
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   UPDATE SEND PROGRESS
+========================================= */
+
+function updateSendProgress(
+    percent,
+    transferred,
+    total
+) {
+
+    sendProgress.style.width =
+        percent.toFixed(1) + "%";
+
+
+    sendPercent.textContent =
+        percent.toFixed(1) + "%";
+
+
+    const elapsedSeconds =
+        Math.max(
+            (performance.now() - sendStartTime) / 1000,
+            0.001
+        );
+
+    const speed =
+        transferred / elapsedSeconds;
+
+    const remainingBytes =
+        Math.max(total - transferred, 0);
+
+    const etaSeconds =
+        speed > 0
+            ? remainingBytes / speed
+            : 0;
+
+    sendSpeed.textContent =
+        formatTransferSpeed(speed);
+
+    sendEta.textContent =
+        remainingBytes === 0
+            ? "00:00"
+            : formatDuration(etaSeconds);
+
+    sendStatus.textContent =
+        `${formatBytes(transferred)} / ${formatBytes(total)}`;
+
+}
+
+
+/* =========================================
+   HANDLE INCOMING DATA
+========================================= */
+
+async function handleIncomingMessage(
+    event
+) {
+
+    /*
+        Metadata messages are JSON strings.
+    */
+
+    if (
+        typeof event.data ===
+        "string"
+    ) {
+
+        let message;
+
+
+        try {
+
+            message =
+                JSON.parse(
+                    event.data
+                );
+
+        }
+
+        catch {
+
+            return;
+
+        }
+
+
+        if (
+            message.type ===
+            "file-start"
+        ) {
+
+            await startReceivingFile(
+                message
+            );
+
+            return;
+
+        }
+
+
+        if (
+            message.type ===
+            "receiver-ready"
+        ) {
+            console.log("Receiver is ready to receive file chunks.");
+            if (receiverReadyResolver) {
+                receiverReadyResolver();
+            }
+            return;
+        }
+
+        if (
+            message.type ===
+            "file-end"
+        ) {
+
+            await finishReceivingFile();
+
+            return;
+
+        }
+
+
+        return;
+
+    }
+
+
+    /*
+        Binary chunk.
+    */
+
+    if (
+        event.data instanceof ArrayBuffer
+    ) {
+
+        await receiveChunk(
+            event.data
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   START RECEIVING
+========================================= */
+
+async function startReceivingFile(
+    metadata
+) {
+
+    incomingFile =
+        metadata;
+
+
+    receivedBytes =
+        0;
+
+    receiveStartTime = 0;
+    receiveSpeed.textContent = "0 B/s";
+    receiveEta.textContent = "--:--";
+
+
+    /* The file is not written until the user selects a save location. */
+    receivingFile =
+        false;
+
+
+    receiveMeta.classList.remove(
+        "hidden"
+    );
+
+
+    receiveProgressContainer.classList.remove(
+        "hidden"
+    );
+
+
+    saveLocationButton.classList.remove(
+        "hidden"
+    );
+
+
+    receiveFileName.textContent =
+        metadata.name;
+
+
+    receiveFileSize.textContent =
+        formatBytes(
+            metadata.size
+        );
+
+
+    receiveStatus.textContent =
+        "📥 Incoming file detected. Choose where to save it.";
+
+
+    receivedFileBox.textContent =
+        "Waiting for save location...";
+
+
+    receiveProgress.style.width =
+        "0%";
+
+
+    receivePercent.textContent =
+        "0%";
+
+
+    /*
+        IMPORTANT:
+
+        For very large files we use the
+        File System Access API so that chunks
+        can be written directly to disk.
+
+        This avoids keeping 100 GB in RAM.
+    */
+
+    /* Save picker is opened only by the user's button click. */
+
+}
+
+
+/* =========================================
+   CHOOSE SAVE LOCATION
+========================================= */
+
+/*
+   IMPORTANT: the file picker MUST be opened directly from a real
+   user interaction. Do not call this from startReceivingFile().
+*/
+saveLocationButton.addEventListener(
+    "click",
+    function (event) {
+        event.preventDefault();
+
+        if (!incomingFile) {
+            receiveStatus.textContent =
+                "No incoming file is waiting.";
+            return;
+        }
+
+        /* Call the picker immediately from the click event. */
+        chooseSaveLocation();
+    },
+    { passive: false }
+);
+
+async function chooseSaveLocation() {
+
+    /*
+        Browser support check.
+    */
+
+    if (
+        !("showSaveFilePicker" in window)
+    ) {
+
+        receiveStatus.textContent =
+            "This browser does not support direct disk saving. Chrome/Edge is recommended.";
+
+        return;
+
+    }
+
+
+    try {
+
+        console.log(
+            "Opening save picker. User activation:",
+            navigator.userActivation ? navigator.userActivation.isActive : "unknown"
+        );
+
+        saveFileHandle =
+            await window.showSaveFilePicker({
+
+                suggestedName:
+                    incomingFile.name,
+
+                types: [
+
+                    {
+                        description:
+                            "Received File",
+
+                        accept: {
+                            "*/*":
+                                [
+                                    "." +
+                                    getExtension(
+                                        incomingFile.name
+                                    )
+                                ]
+                        }
+
+                    }
+
+                ]
+
+            });
+
+
+        writableStream =
+            await saveFileHandle.createWritable();
+
+        receivingFile = true;
+        receiveStartTime = performance.now();
+        receiveSpeed.textContent = "0 B/s";
+        receiveEta.textContent = "--:--";
+        saveLocationButton.classList.add("hidden");
+
+        receiveStatus.textContent =
+            "Ready. Receiving file...";
+
+        receivedFileBox.textContent =
+            "File is being written directly to disk.";
+
+        dataChannel.send(
+            JSON.stringify({
+                type: "receiver-ready"
+            })
+        );
+
+
+        receivedFileBox.textContent =
+            "File is being written directly to disk.";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Save location error:",
+            error
+        );
+
+
+        receiveStatus.textContent =
+            "Save location was not selected.";
+
+
+        /*
+            Tell sender to stop.
+        */
+
+        transferCancelled =
+            true;
+
+        socket.emit(
+            "transfer-cancelled"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   RECEIVE CHUNK
+========================================= */
+
+async function receiveChunk(
+    buffer
+) {
+
+    if (
+        !receivingFile ||
+        !writableStream
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        await writableStream.write(
+            new Uint8Array(
+                buffer
+            )
+        );
+
+
+        receivedBytes +=
+            buffer.byteLength;
+
+
+        const percent =
+            incomingFile.size === 0
+                ? 100
+                : (
+                    receivedBytes /
+                    incomingFile.size
+                ) * 100;
+
+
+        receiveProgress.style.width =
+            Math.min(
+                percent,
+                100
+            ).toFixed(1) + "%";
+
+
+        receivePercent.textContent =
+            Math.min(
+                percent,
+                100
+            ).toFixed(1) + "%";
+
+
+        const elapsedSeconds =
+            Math.max(
+                (performance.now() - receiveStartTime) / 1000,
+                0.001
+            );
+
+        const speed =
+            receivedBytes / elapsedSeconds;
+
+        const remainingBytes =
+            Math.max(
+                incomingFile.size - receivedBytes,
+                0
+            );
+
+        const etaSeconds =
+            speed > 0
+                ? remainingBytes / speed
+                : 0;
+
+        receiveSpeed.textContent =
+            formatTransferSpeed(speed);
+
+        receiveEta.textContent =
+            remainingBytes === 0
+                ? "00:00"
+                : formatDuration(etaSeconds);
+
+        receiveStatus.textContent =
+            `${formatBytes(receivedBytes)} / ${formatBytes(incomingFile.size)}`;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Chunk writing error:",
+            error
+        );
+
+
+        receiveStatus.textContent =
+            "❌ Could not write file to disk.";
+
+    }
+
+}
+
+
+/* =========================================
+   FINISH RECEIVING
+========================================= */
+
+async function finishReceivingFile() {
+
+    try {
+
+        if (
+            writableStream
+        ) {
+
+            await writableStream.close();
+
+        }
+
+
+        writableStream =
+            null;
+
+
+        saveFileHandle =
+            null;
+
+
+        receivingFile =
+            false;
+
+
+        receiveProgress.style.width =
+            "100%";
+
+
+        receivePercent.textContent =
+            "100%";
+
+
+        receiveSpeed.textContent =
+            formatTransferSpeed(
+                receiveStartTime
+                    ? incomingFile.size / Math.max((performance.now() - receiveStartTime) / 1000, 0.001)
+                    : 0
+            );
+
+        receiveEta.textContent = "00:00";
+
+        receiveStatus.textContent =
+            "✅ File received successfully.";
+
+
+        receivedFileBox.textContent =
+            `${incomingFile.name} has been saved successfully.`;
+
+        saveLocationButton.classList.add("hidden");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Finish receiving error:",
+            error
+        );
+
+
+        receiveStatus.textContent =
+            "❌ Could not finish saving the file.";
+
+    }
+
+}
+
+
+/* =========================================
+   TRANSFER CANCELLED
+========================================= */
+
+socket.on(
+    "transfer-cancelled",
+    () => {
+
+        transferCancelled =
+            true;
+
+
+        sendStatus.textContent =
+            "Transfer cancelled.";
+
+        receiveStatus.textContent =
+            "Transfer cancelled.";
+
+    }
+);
+
+
+/* =========================================
+   TRANSFER SPEED / ETA HELPERS
+========================================= */
+
+function formatTransferSpeed(bytesPerSecond) {
+
+    if (!Number.isFinite(bytesPerSecond) || bytesPerSecond <= 0) {
+        return "0 B/s";
+    }
+
+    const units = ["B/s", "KB/s", "MB/s", "GB/s", "TB/s"];
+    let value = bytesPerSecond;
+    let index = 0;
+
+    while (value >= 1024 && index < units.length - 1) {
+        value /= 1024;
+        index++;
+    }
+
+    return `${value >= 100 ? value.toFixed(0) : value >= 10 ? value.toFixed(1) : value.toFixed(2)} ${units[index]}`;
+}
+
+function formatDuration(seconds) {
+
+    if (!Number.isFinite(seconds) || seconds <= 0) {
+        return "00:00";
+    }
+
+    seconds = Math.ceil(seconds);
+
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    if (hours > 0) {
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}
+
+
+/* =========================================
+   FORMAT BYTES
+========================================= */
+
+function formatBytes(
+    bytes
+) {
+
+    if (
+        bytes === 0
+    ) {
+
+        return "0 Bytes";
+
+    }
+
+
+    const units = [
+        "Bytes",
+        "KB",
+        "MB",
+        "GB",
+        "TB"
+    ];
+
+
+    const index =
+        Math.floor(
+            Math.log(bytes) /
+            Math.log(1024)
+        );
+
+
+    return (
+        parseFloat(
+            (
+                bytes /
+                Math.pow(
+                    1024,
+                    index
+                )
+            ).toFixed(2)
+        ) +
+        " " +
+        units[index]
+    );
+
+}
+
+
+/* =========================================
+   GET EXTENSION
+========================================= */
+
+function getExtension(
+    filename
+) {
+
+    const parts =
+        filename.split(".");
+
+
+    if (
+        parts.length < 2
+    ) {
+
+        return "bin";
+
+    }
+
+
+    return parts
+        .pop()
+        .replace(
+            /[^a-zA-Z0-9]/g,
+            ""
+        ) || "bin";
+
+}
+
+
+/* =========================================
+   SLEEP
+========================================= */
+
+function sleep(
+    ms
+) {
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
+
+}
+
+
+/* =========================================
+   INITIAL STATE
+========================================= */
+
+console.log(
+    "P2P Transfer client loaded."
+);
+
+</script>
+
+
+</body>
+</html>
