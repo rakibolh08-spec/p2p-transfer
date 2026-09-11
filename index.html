@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="P2P Transfer - Fast and private peer-to-peer file transfer."
+    >
+
+    <title>P2P Transfer</title>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================================
+         BACKGROUND
+    ========================================== -->
+
+    <div class="background">
+
+        <div class="background-glow glow-1"></div>
+
+        <div class="background-glow glow-2"></div>
+
+        <div class="background-grid"></div>
+
+    </div>
+
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <header class="header">
+
+        <div class="header-inner">
+
+            <a href="#" class="logo">
+
+                <span class="logo-icon">
+                    ⚡
+                </span>
+
+                <span class="logo-text">
+                    P2P <strong>TRANSFER</strong>
+                </span>
+
+            </a>
+
+
+            <div class="connection-status">
+
+                <span
+                    class="status-dot"
+                    id="connectionDot"
+                ></span>
+
+                <span id="connectionStatusText">
+                    Connecting...
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <main class="main">
+
+
+        <!-- =====================================
+             HERO
+        ====================================== -->
+
+        <section class="hero">
+
+            <div class="hero-badge">
+
+                <span>⚡</span>
+
+                PEER TO PEER FILE TRANSFER
+
+            </div>
+
+
+            <h1>
+
+                Transfer Files
+
+                <span>Directly.</span>
+
+            </h1>
+
+
+            <p class="hero-description">
+
+                Send large files directly between devices.
+                Create a private room and transfer files
+                without storing them permanently on our server.
+
+            </p>
+
+        </section>
+
+
+        <!-- =====================================
+             ACTION CARDS
+        ====================================== -->
+
+        <section class="action-section">
+
+
+            <!-- CREATE ROOM -->
+
+            <div class="action-card">
+
+                <div class="card-icon create-icon">
+                    +
+                </div>
+
+
+                <div class="card-content">
+
+                    <h2>
+                        Create a Room
+                    </h2>
+
+
+                    <p>
+
+                        Create your private room,
+                        set a password and share the
+                        room code with another device.
+
+                    </p>
+
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        id="createRoomButton"
+                    >
+
+                        <span>
+                            Create Room
+                        </span>
+
+                        <span class="button-arrow">
+                            →
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- JOIN ROOM -->
+
+            <div class="action-card">
+
+                <div class="card-icon join-icon">
+                    ↗
+                </div>
+
+
+                <div class="card-content">
+
+                    <h2>
+                        Join a Room
+                    </h2>
+
+
+                    <p>
+
+                        Enter a room code and password
+                        to connect with another device.
+
+                    </p>
+
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="joinRoomButton"
+                    >
+
+                        <span>
+                            Join Room
+                        </span>
+
+                        <span class="button-arrow">
+                            →
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             FEATURES
+        ====================================== -->
+
+        <section class="features">
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    🔒
+                </div>
+
+                <div>
+
+                    <h3>
+                        Private
+                    </h3>
+
+                    <p>
+                        Password protected rooms
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    ⚡
+                </div>
+
+                <div>
+
+                    <h3>
+                        Peer to Peer
+                    </h3>
+
+                    <p>
+                        Direct device-to-device transfer
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    📦
+                </div>
+
+                <div>
+
+                    <h3>
+                        Large Files
+                    </h3>
+
+                    <p>
+                        Designed for large transfers
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             CREATE ROOM MODAL
+        ====================================== -->
+
+        <div
+            class="modal"
+            id="createRoomModal"
+            aria-hidden="true"
+        >
+
+            <div class="modal-overlay"></div>
+
+
+            <div class="modal-box">
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="closeCreateModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+
+                <div class="modal-header">
+
+                    <div class="modal-icon">
+                        +
+                    </div>
+
+
+                    <h2>
+                        Create Room
+                    </h2>
+
+
+                    <p>
+                        Create a private room for file transfer.
+                    </p>
+
+                </div>
+
+
+                <form id="createRoomForm">
+
+
+                    <div class="input-group">
+
+                        <label for="roomName">
+                            Room Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="roomName"
+                            name="roomName"
+                            placeholder="My Transfer Room"
+                            maxlength="50"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label for="roomPassword">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="roomPassword"
+                            name="roomPassword"
+                            placeholder="Enter a password"
+                            minlength="4"
+                            maxlength="64"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button full-button"
+                    >
+
+                        Create Private Room
+
+                        <span class="button-arrow">
+                            →
+                        </span>
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             JOIN ROOM MODAL
+        ====================================== -->
+
+        <div
+            class="modal"
+            id="joinRoomModal"
+            aria-hidden="true"
+        >
+
+            <div class="modal-overlay"></div>
+
+
+            <div class="modal-box">
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="closeJoinModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+
+                <div class="modal-header">
+
+                    <div class="modal-icon join-modal-icon">
+                        ↗
+                    </div>
+
+
+                    <h2>
+                        Join Room
+                    </h2>
+
+
+                    <p>
+                        Enter the room details to connect.
+                    </p>
+
+                </div>
+
+
+                <form id="joinRoomForm">
+
+
+                    <div class="input-group">
+
+                        <label for="joinRoomCode">
+                            Room Code
+                        </label>
+
+                        <input
+                            type="text"
+                            id="joinRoomCode"
+                            name="roomCode"
+                            placeholder="XXXX-XXXX"
+                            maxlength="9"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label for="joinRoomPassword">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="joinRoomPassword"
+                            name="password"
+                            placeholder="Enter room password"
+                            maxlength="64"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="secondary-button full-button"
+                    >
+
+                        Join Private Room
+
+                        <span class="button-arrow">
+                            →
+                        </span>
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             ROOM CREATED MODAL
+        ====================================== -->
+
+        <div
+            class="modal"
+            id="roomCreatedModal"
+            aria-hidden="true"
+        >
+
+            <div class="modal-overlay"></div>
+
+
+            <div class="modal-box room-created-box">
+
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="closeRoomCreatedModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+
+                <div class="success-icon">
+                    ✓
+                </div>
+
+
+                <div class="modal-header">
+
+                    <h2>
+                        Room Created
+                    </h2>
+
+
+                    <p>
+                        Share the room code and password
+                        with the other device.
+                    </p>
+
+                </div>
+
+
+                <div class="room-code-container">
+
+                    <span class="room-code-label">
+                        ROOM CODE
+                    </span>
+
+
+                    <div
+                        class="room-code"
+                        id="generatedRoomCode"
+                    >
+                        ---- ----
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="copy-button"
+                        id="copyRoomCodeButton"
+                    >
+                        📋 Copy Room Code
+                    </button>
+
+                </div>
+
+
+                <div class="room-password-display">
+
+                    <span>
+                        Password
+                    </span>
+
+
+                    <strong id="generatedRoomPassword">
+                        ********
+                    </strong>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="primary-button full-button"
+                    id="enterRoomButton"
+                >
+
+                    Enter Room
+
+                    <span class="button-arrow">
+                        →
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             TOAST
+        ====================================== -->
+
+        <div
+            class="toast"
+            id="toast"
+            role="status"
+            aria-live="polite"
+        >
+
+            <span id="toastMessage">
+                Notification
+            </span>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================
+         FOOTER
+    ========================================== -->
+
+    <footer class="footer">
+
+        <p>
+            © 2026 P2P Transfer
+        </p>
+
+
+        <div class="footer-links">
+
+            <span>
+                Private
+            </span>
+
+            <span>
+                •
+            </span>
+
+            <span>
+                Secure
+            </span>
+
+            <span>
+                •
+            </span>
+
+            <span>
+                Peer to Peer
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================================
+         SOCKET.IO CLIENT
+    ========================================== -->
+
+    <script src="/socket.io/socket.io.js"></script>
+
+
+    <!-- =========================================
+         MAIN JAVASCRIPT
+    ========================================== -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
