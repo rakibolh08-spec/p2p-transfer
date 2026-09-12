@@ -716,6 +716,8 @@
                     Send File
                 </button>
 
+                
+
             </div>
 
 
@@ -932,7 +934,6 @@ let receivingFile = false;
 
 let incomingFile = null;
 
-let transferCancelled = false;
 let receiverReadyResolver = null;
 let receiverReadyPromise = null;
 
@@ -1885,8 +1886,7 @@ async function sendFile(file) {
 
     try {
 
-        transferCancelled =
-            false;
+       
 
 
         sendButton.disabled =
@@ -1901,6 +1901,7 @@ async function sendFile(file) {
         sendStatus.textContent =
             "Starting transfer...";
 
+     
 
         sendProgress.style.width =
             "0%";
@@ -1945,9 +1946,7 @@ async function sendFile(file) {
         receiverReadyResolver = null;
         receiverReadyPromise = null;
 
-        if (transferCancelled) {
-            return;
-        }
+        
 
         sendStatus.textContent = "Sending file...";
 
@@ -1960,15 +1959,9 @@ async function sendFile(file) {
         while (
             offset < file.size
         ) {
+            
 
-            if (
-                transferCancelled
-            ) {
-
-                return;
-
-            }
-
+          
 
             /*
                 Backpressure.
@@ -2066,6 +2059,10 @@ async function sendFile(file) {
 
         sendStatus.textContent =
             "✅ File sent successfully.";
+
+            
+
+            
 
 
         sendButton.disabled =
@@ -2257,6 +2254,7 @@ async function handleIncomingMessage(
             return;
 
         }
+
 
 
         if (
@@ -2503,17 +2501,7 @@ async function chooseSaveLocation() {
             "Save location was not selected.";
 
 
-        /*
-            Tell sender to stop.
-        */
-
-        transferCancelled =
-            true;
-
-        socket.emit(
-            "transfer-cancelled"
-        );
-
+       
     }
 
 }
@@ -2695,26 +2683,6 @@ async function finishReceivingFile() {
 }
 
 
-/* =========================================
-   TRANSFER CANCELLED
-========================================= */
-
-socket.on(
-    "transfer-cancelled",
-    () => {
-
-        transferCancelled =
-            true;
-
-
-        sendStatus.textContent =
-            "Transfer cancelled.";
-
-        receiveStatus.textContent =
-            "Transfer cancelled.";
-
-    }
-);
 
 
 /* =========================================

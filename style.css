@@ -1,3 +1,15 @@
+#pauseButton,
+#cancelButton {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+#pauseButton:disabled,
+#cancelButton:disabled {
+    opacity: 0.45 !important;
+}
+
 /* =========================================
    P2P TRANSFER
    Main Stylesheet
